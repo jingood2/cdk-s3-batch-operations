@@ -24,7 +24,7 @@ export class MyStack extends Stack {
       }),
     );
  */
-    const existingContentBucket = new s3.Bucket(this, 'ExsitingContentBucket', { versioned: false } );
+    const existingContentBucket = new s3.Bucket(this, 'ExisitingContentBucket', { versioned: false } );
     existingContentBucket.grantReadWrite(lambdaExecutionRole);
 
     const inventoryAndLogsBucket = new s3.Bucket(this, 'InventoryAndLogsBucket', { versioned: false });
@@ -64,7 +64,7 @@ const devEnv = {
 
 const app = new App();
 
-new MyStack(app, 'my-stack-dev', { env: devEnv });
+new MyStack(app, 'S3BatchOperations', { env: devEnv });
 // new MyStack(app, 'my-stack-prod', { env: prodEnv });
 
 app.synth();
