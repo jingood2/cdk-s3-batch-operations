@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+Object {
+  "Parameters": Object {
+    "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afArtifactHashD021E089": Object {
+      "Description": "Artifact hash for asset \\"1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538af\\"",
+      "Type": "String",
+    },
+    "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afS3BucketCBD7C46E": Object {
+      "Description": "S3 bucket for asset \\"1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538af\\"",
+      "Type": "String",
+    },
+    "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afS3VersionKeyF20F3272": Object {
+      "Description": "S3 key for asset version \\"1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538af\\"",
+      "Type": "String",
+    },
+  },
+  "Resources": Object {
+    "ExsitingContentBucket77F40F49": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "InventoryAndLogsBucketB5DF1E2C": Object {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "LambdaExecutionRoleD5C26073": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LambdaExecutionRoleDefaultPolicy6D69732F": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "ExsitingContentBucket77F40F49",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "ExsitingContentBucket77F40F49",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LambdaExecutionRoleDefaultPolicy6D69732F",
+        "Roles": Array [
+          Object {
+            "Ref": "LambdaExecutionRoleD5C26073",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "S3BatchOperationsRole79F42304": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "batchoperations.s3.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "S3BatchOperationsRoleDefaultPolicy55D2AE09": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetObject*",
+                "s3:GetBucket*",
+                "s3:List*",
+                "s3:DeleteObject*",
+                "s3:PutObject*",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "InventoryAndLogsBucketB5DF1E2C",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "InventoryAndLogsBucketB5DF1E2C",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "S3BatchProcessor6C619AEA",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "lambda:*",
+                "s3:*",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "S3BatchOperationsRoleDefaultPolicy55D2AE09",
+        "Roles": Array [
+          Object {
+            "Ref": "S3BatchOperationsRole79F42304",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "S3BatchProcessor6C619AEA": Object {
+      "DependsOn": Array [
+        "LambdaExecutionRoleDefaultPolicy6D69732F",
+        "LambdaExecutionRoleD5C26073",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Ref": "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afS3BucketCBD7C46E",
+          },
+          "S3Key": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                Object {
+                  "Fn::Select": Array [
+                    0,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afS3VersionKeyF20F3272",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                Object {
+                  "Fn::Select": Array [
+                    1,
+                    Object {
+                      "Fn::Split": Array [
+                        "||",
+                        Object {
+                          "Ref": "AssetParameters1d7c7d1a981fab393b3033d2d945a0c8e089ef2829a423b612c9d1004bb538afS3VersionKeyF20F3272",
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "OUTPUT_BUCKET": Object {
+              "Ref": "ExsitingContentBucket77F40F49",
+            },
+          },
+        },
+        "Handler": "lambda_function.lambda_handler",
+        "ReservedConcurrentExecutions": 1,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "LambdaExecutionRoleD5C26073",
+            "Arn",
+          ],
+        },
+        "Runtime": "python3.7",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+  },
+}
+`;
